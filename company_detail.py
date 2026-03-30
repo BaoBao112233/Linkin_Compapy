@@ -14,6 +14,10 @@ from playwright.sync_api import Page
 from tenacity import retry, stop_after_attempt, wait_exponential
 
 import config
+from website_email_extractor import WebsiteEmailExtractor
+
+# ── Singleton extractor (tái sử dụng session HTTP) ────────────────────────────
+_website_extractor = WebsiteEmailExtractor()
 
 # ── Helper: extract email từ text ────────────────────────────────────────────
 _EMAIL_RE = re.compile(r"[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}")
@@ -195,16 +199,23 @@ class CompanyDetailScraper:
         # Lấy thông tin từ trang About
         about = self._get_about_info(base_url)
 
+        # Nếu LinkedIn không có email → crawl website của công ty
+        email = about.get("email", "")
+        website = about.get("website", "")
+        if not email and website:
+            logger.info(f"  LinkedIn không có email – đang crawl website: {website}")
+            email = _website_extractor.extract(website)
+
         return CompanyDetail(
             name=name,
             linkedin_url=base_url,
-            website=about.get("website", ""),
+            website=website,
             industry=about.get("industry", ""),
             company_size=about.get("company_size", ""),
             headquarters=about.get("headquarters", ""),
             founded=about.get("founded", ""),
             specialties=about.get("specialties", ""),
             description=about.get("description", ""),
-            email=about.get("email", ""),
+            email=email,
             followers=followers,
         )

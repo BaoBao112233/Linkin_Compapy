@@ -12,6 +12,10 @@ from tenacity import retry, stop_after_attempt, wait_exponential
 
 import config
 from company_detail import CompanyDetail, extract_email
+from website_email_extractor import WebsiteEmailExtractor
+
+# Singleton – tái sử dụng HTTP session cho toàn bộ pipeline
+_web_extractor = WebsiteEmailExtractor()
 
 
 class LinkedInAPIClient:
@@ -182,6 +186,11 @@ class LinkedInAPIClient:
         if not email:
             # Thử tìm trong description / specialties
             email = extract_email(description) or extract_email(specialties)
+
+        # Nếu vẫn không có email → crawl website công ty + Groq LLM extract
+        if not email and website:
+            logger.info(f"  LinkedIn không có email cho '{name}' – crawl website: {website}")
+            email = _web_extractor.extract(website)
 
         return CompanyDetail(
             name=name,

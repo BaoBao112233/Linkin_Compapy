@@ -9,5 +9,9 @@ tqdm>=4.66.0
 loguru>=0.7.0
 tenacity>=8.3.0
 openpyxl>=3.1.0
+# LLM – Langchain + Groq
+langchain>=0.3.0
+langchain-core>=0.3.0
+langchain-groq>=0.2.0
 # linkedin-api: cài thủ công nếu cần (chỉ hỗ trợ Python ≤ 3.12)
 # pip install git+https://github.com/tomquirk/linkedin-api.git

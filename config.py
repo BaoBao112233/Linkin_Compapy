@@ -15,6 +15,10 @@ LINKEDIN_PASSWORD   = os.getenv("LINKEDIN_PASSWORD", "your_password")
 LINKEDIN_LI_AT      = os.getenv("LINKEDIN_LI_AT", "")        # session cookie
 LINKEDIN_JSESSIONID = os.getenv("LINKEDIN_JSESSIONID", "")   # CSRF token
 
+# ── Groq / LLM Settings ──────────────────────────────────────────────────────
+GROQ_API_KEY = os.getenv("GROQ_API_KEY", "")          # API key từ console.groq.com
+GROQ_MODEL   = os.getenv("GROQ_MODEL", "llama-3.3-70b-versatile")  # model Groq dùng
+
 # ── Scraping Settings ─────────────────────────────────────────────────────────
 HEADLESS_MODE   = os.getenv("HEADLESS", "true").lower() == "true"   # True = ẩn browser
 REQUEST_DELAY   = float(os.getenv("REQUEST_DELAY", "2.5"))          # giây giữa các request
