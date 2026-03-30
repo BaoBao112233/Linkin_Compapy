@@ -1,0 +1,13 @@
+playwright>=1.43.0
+requests>=2.31.0
+python-dotenv>=1.0.1
+pandas>=2.0.0
+beautifulsoup4>=4.12.0
+lxml>=5.0.0
+fake-useragent>=1.5.0
+tqdm>=4.66.0
+loguru>=0.7.0
+tenacity>=8.3.0
+openpyxl>=3.1.0
+# linkedin-api: cài thủ công nếu cần (chỉ hỗ trợ Python ≤ 3.12)
+# pip install git+https://github.com/tomquirk/linkedin-api.git
