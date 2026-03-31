@@ -191,7 +191,7 @@ def main():
     )
     parser.add_argument(
         "--location", default="",
-        help="Quốc gia (chỉ dùng với --mode browser). Vd: 'United States,Vietnam'"
+        help="Quốc gia (chỉ dùng với --mode browser). Vd: 'United States,'"
     )
     parser.add_argument(
         "--pages", type=int, default=5,

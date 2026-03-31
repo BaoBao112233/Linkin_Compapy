@@ -6,7 +6,7 @@ run_pipeline.py – Pipeline đầy đủ:
 Cách dùng:
 
   # Tìm + tự động sinh từ khóa liên quan bằng LLM (mặc định):
-  python run_pipeline.py --industry "fintech Vietnam" --limit 5
+  python run_pipeline.py --industry "fintech " --limit 5
 
   # Chỉ định từ khóa thủ công (bỏ qua LLM expand):
   python run_pipeline.py --keyword "neobank,digital payments" --limit 10
@@ -160,7 +160,7 @@ def main():
     kw_group.add_argument(
         "--industry", "-i", default="",
         metavar="TOPIC",
-        help="Lĩnh vực / chủ đề. LLM sẽ tự sinh từ khóa liên quan. Vd: 'fintech Vietnam'",
+        help="Lĩnh vực / chủ đề. LLM sẽ tự sinh từ khóa liên quan. Vd: 'fintech '",
     )
     kw_group.add_argument(
         "--keyword", "-k", default="",

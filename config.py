@@ -27,13 +27,48 @@ MAX_RETRIES     = int(os.getenv("MAX_RETRIES", "3"))                # số lần
 
 # ── Search Defaults ───────────────────────────────────────────────────────────
 DEFAULT_KEYWORDS  = ["technology", "fintech", "healthcare"]         # từ khóa tìm kiếm mặc định
-DEFAULT_LOCATIONS = ["United States", "United Kingdom", "Vietnam"]  # quốc gia mặc định
+DEFAULT_LOCATIONS = ["United States", "United Kingdom", ""]  # quốc gia mặc định
 DEFAULT_INDUSTRIES = [                                              # ngành mặc định
     "Computer Software",
     "Internet",
     "Financial Services",
     "Hospital & Health Care",
 ]
+
+# ── Telegram Settings ────────────────────────────────────────────────────────
+TELEGRAM_BOT_TOKEN  = os.getenv("TELEGRAM_BOT_TOKEN", "8585500195:AAFj68fr3gPmNLeWGKP-2Og1Uxk9oN3lvaI")
+# Telethon MTProto (lấy tại https://my.telegram.org/apps)
+TELEGRAM_API_ID     = int(os.getenv("TELEGRAM_API_ID", "0"))
+TELEGRAM_API_HASH   = os.getenv("TELEGRAM_API_HASH", "")
+# Các kênh Telegram mặc định để tìm kiếm công ty (thêm/bớt tuỳ ý)
+TELEGRAM_BUSINESS_CHANNELS = [
+    # === Tin tức kinh doanh / tài chính Việt Nam ===
+    "cafef_vn",                # Cafef - tin tức tài chính
+    "tinnhanhchungkhoan",      # Tin nhanh chứng khoán
+    "vneconomy",               # VnEconomy
+    "baodautu_vn",             # Báo đầu tư
+    "nhipcaudautu",            # Nhịp cầu đầu tư
+    "doanhnhanonline",         # Doanh nhân online
+    "thuongtruong",            # Thương trường
+    "tapchicongthuong",        # Tạp chí công thương
+    "bizlive",                 # BizLive
+    # === Startup / Tech ===
+    "tech",             # Tech.org
+    "tech",             #  Tech
+    "fintechvn",               # Fintech VN
+    # === Công ty cụ thể (ví dụ) ===
+    "momo_vn",                 # MoMo
+    "FPT_official",            # FPT Corporation
+    "viettel_group",           # Viettel
+    "vnpt_official",           # VNPT
+    # === Tuyển dụng / job (chứa info công ty) ===
+    "topcv_hr",                # TopCV tuyển dụng
+    "vieclam24h",              # Việc làm 24h
+    "ITviecvn",                # IT Việc
+    "careerviet_vn",           # CareerViet
+]
+TELEGRAM_SESSION_FILE = os.getenv("TELEGRAM_SESSION_FILE", "telegram_session")
+TELEGRAM_MAX_MESSAGES = int(os.getenv("TELEGRAM_MAX_MESSAGES", "200"))  # msg/kênh
 
 # ── Output Settings ───────────────────────────────────────────────────────────
 OUTPUT_DIR   = os.getenv("OUTPUT_DIR", "output")

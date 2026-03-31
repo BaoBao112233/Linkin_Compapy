@@ -68,7 +68,7 @@ class CompanySearchScraper:
         GEO_MAP = {
             "United States":  "103644278",
             "United Kingdom": "101165590",
-            "Vietnam":        "104195383",
+            "":        "104195383",
             "Singapore":      "102454443",
             "Germany":        "101282230",
             "France":         "105015875",

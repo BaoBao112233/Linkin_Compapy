@@ -107,9 +107,75 @@ class LinkedInAPIClient:
         logger.info(f"API: Tìm thấy {len(results)} công ty")
         return results
 
+    # ── FAST bulk: chỉ dùng search result, không gọi get_company() ─────
+    def fetch_companies_fast_bulk(
+        self,
+        keyword: str,
+        limit: int = 200,
+    ) -> list[CompanyDetail]:
+        """
+        Tốc độ cao: chỉ dùng dữ liệu từ search result (1 API call/keyword).
+        Không gọi get_company() → nhanh hơn ~100x.
+
+        Raw result format: {"urn_id": "123", "name": "...", "headline": "Industry • Location", "subline": "26K followers"}
+        """
+        import re as _re
+
+        search_results = self.search_companies(keyword, limit=limit)
+        details: list[CompanyDetail] = []
+
+        for result in search_results:
+            try:
+                urn_id = str(result.get("urn_id") or "").strip()
+                if not urn_id:
+                    continue
+
+                # ── LinkedIn URL ──────────────────────────────────────────
+                linkedin_url = f"{config.LINKEDIN_COMPANY_URL}{urn_id}/"
+
+                # ── Name ──────────────────────────────────────────────────
+                name = str(result.get("name") or "").strip()
+                if not name:
+                    continue
+
+                # ── Headline: "Industry • Location City" ─────────────────
+                headline = str(result.get("headline") or "")
+                industry = ""
+                headquarters = ""
+                description_short = headline
+
+                if "•" in headline:
+                    parts = [p.strip() for p in headline.split("•", 1)]
+                    industry = parts[0]
+                    headquarters = parts[1] if len(parts) > 1 else ""
+                else:
+                    industry = headline
+
+                # ── Subline: "26K followers" ──────────────────────────────
+                subline = str(result.get("subline") or "")
+                followers = ""
+                m = _re.search(r"([\d,.]+[KkMm]?)\s*follower", subline)
+                if m:
+                    followers = m.group(1)
+
+                detail = CompanyDetail(
+                    name=name,
+                    linkedin_url=linkedin_url,
+                    industry=industry,
+                    headquarters=headquarters,
+                    followers=followers,
+                    description_short=description_short,
+                )
+                details.append(detail)
+            except Exception as exc:
+                logger.debug(f"  [FAST] parse error: {exc}")
+
+        logger.info(f"  → [FAST] {len(details)} công ty từ '{keyword}'")
+        return details
+
     # ── Lấy chi tiết một công ty ─────────────────────────────────────────
     @retry(stop=stop_after_attempt(config.MAX_RETRIES), wait=wait_exponential(min=2, max=8))
-    def get_company(self, public_id: str) -> CompanyDetail:
+    def get_company(self, public_id: str, skip_email_crawl: bool = False) -> CompanyDetail:
         """
         Lấy thông tin chi tiết công ty qua public_id (slug).
 
@@ -188,7 +254,7 @@ class LinkedInAPIClient:
             email = extract_email(description) or extract_email(specialties)
 
         # Nếu vẫn không có email → crawl website công ty + Groq LLM extract
-        if not email and website:
+        if not email and website and not skip_email_crawl:
             logger.info(f"  LinkedIn không có email cho '{name}' – crawl website: {website}")
             email = _web_extractor.extract(website)
 
@@ -212,9 +278,13 @@ class LinkedInAPIClient:
         self,
         keyword: str,
         limit: int = 100,
+        skip_email_crawl: bool = False,
     ) -> list[CompanyDetail]:
         """
         Tìm kiếm và lấy chi tiết hàng loạt công ty.
+
+        Args:
+            skip_email_crawl: True → bỏ qua crawl website để lấy email (nhanh hơn ~10x)
 
         Returns:
             Danh sách CompanyDetail đã có đầy đủ thông tin (bao gồm website).
@@ -240,7 +310,7 @@ class LinkedInAPIClient:
                     logger.debug(f"Bỏ qua: không tìm được public_id cho {result}")
                     continue
 
-                detail = self.get_company(public_id)
+                detail = self.get_company(public_id, skip_email_crawl=skip_email_crawl)
 
                 # ── Bổ sung thêm thông tin từ kết quả search ──────────────
                 # headline → description_short

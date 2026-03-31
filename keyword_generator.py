@@ -8,7 +8,7 @@ Ví dụ sử dụng độc lập:
 
     from keyword_generator import KeywordGenerator
     gen = KeywordGenerator()
-    keywords = gen.generate("fintech Vietnam")
+    keywords = gen.generate("fintech ")
     # ["fintech", "neobank", "digital payments", "mobile banking", ...]
 """
 
@@ -89,7 +89,7 @@ Guidelines:
         Sinh danh sách từ khóa liên quan đến `topic`.
 
         Args:
-            topic: Chủ đề / ngành (vd: "fintech Vietnam", "healthcare AI", "SaaS B2B")
+            topic: Chủ đề / ngành (vd: "fintech ", "healthcare AI", "SaaS B2B")
             n:     Số lượng từ khóa muốn sinh (gợi ý LLM, không phải giới hạn cứng)
 
         Returns:
